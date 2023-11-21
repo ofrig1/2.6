@@ -12,19 +12,23 @@ IP = '127.0.0.1'
 PORT = 8820
 
 
-class ClientDisconnectedError(Exception):
-    pass
-
-
 def protocol_client_send(message):
-    # send message with protocol
+    """
+    send message with protocol
+    :param message:
+    :return:
+    """
     message_len = len(message)
     final_message = str(message_len) + '$' + message
     return final_message
 
 
 def protocol_client_receive(my_socket):
-    # receives message with protocol
+    """
+    receives message with protocol
+    :param my_socket:
+    :return:
+    """
     cur_char = ''
     message_len = ''
     while cur_char != '$':
@@ -35,6 +39,10 @@ def protocol_client_receive(my_socket):
 
 
 def main():
+    """
+    Sends messages to server and get responses
+    :return:
+    """
     logging.basicConfig(filename="client.log", level=logging.DEBUG)
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
@@ -43,10 +51,10 @@ def main():
             msg = input("Enter message: ")
             logging.debug("User input: " + msg)
             my_socket.send(protocol_client_send(msg).encode())
-            if msg == "EXIT":
-                break
             response = protocol_client_receive(my_socket)
             print(response)
+            if msg == "EXIT":
+                break
     except socket.error as err:
         print('received socket error ' + str(err))
     finally:

@@ -20,7 +20,11 @@ EXIT = 'EXIT'
 
 
 def protocol_send(message):
-    # send message with protocol
+    """
+    send message with protocol
+    :param message:
+    :return:
+    """
     message_len = len(message)
     final_message = str(message_len) + '$' + str(message)
     print("final msg "+final_message)
@@ -28,7 +32,11 @@ def protocol_send(message):
 
 
 def protocol_receive(my_socket):
-    # receives message with protocol
+    """
+    receives message with protocol
+    :param my_socket:
+    :return:
+    """
     cur_char = ''
     message_len = ''
     while cur_char != '$':
@@ -40,48 +48,58 @@ def protocol_receive(my_socket):
 
 
 def time():
-    # Function: TIME
-    # Input:
-    # Output: Current Time (on client server)
+    """
+    get the current time
+    :return: (on client server)
+    """
     current_time = datetime.now().strftime("%H:%M:%S")
     return current_time
 
 
 def name():
-    # Function: NAME
-    # Input:
-    # Output: "My name is" + Name (on client server)
+    """
+    :return: "My name is" + Name
+    """
     name_message = "My name is " + PERSON_NAME
     return name_message
 
 
 def rand():
-    # Function: RAND
-    # Input:
-    # Output: Random Number between 1-10
+    """
+    get a random number
+    :return: random number between 1-9
+    """
     random_num = random.randint(1, 10)
     return random_num
 
 
-def exit_client(client_socket):
-    # Function: EXIT
-    # Input: Client Socket
-    # Output: Send "Socket Connection Closed" to client server
-    client_socket.send("Socket Connection Closed".encode())
+def exit_client():
+    """
+    close the client connection
+    :param:
+    :return:
+    """
+    return "Socket Connection Closed"
 
 
 def random_word(client_socket):
-    # Function: not one of the available ones
-    # Input: Client Socket
-    # Output: Send "Not one of the available functions" to client server
+    """
+    client sent a message - not one of the available functions
+    :param client_socket:
+    :return:
+    """
     print("Client sent random word")
     client_socket.send(protocol_send("Not one of the available functions").encode())
 
 
 def handle_msg(client_socket):
-    # Function: Handles message that client sends
-    # Input: Client socket
-    # Output: Sends client what they requested
+    """
+    Handles message that client sent
+    Sends client what they requested
+    :param client_socket:
+    :return:
+    """
+
     try:
         while True:
             request = protocol_receive(client_socket)
@@ -93,7 +111,7 @@ def handle_msg(client_socket):
             elif request == RAND:
                 client_socket.send(protocol_send(str(rand())).encode())
             elif request == EXIT:
-                exit_client(client_socket)
+                client_socket.send(protocol_send(exit_client()).encode())
                 break
             else:
                 random_word(client_socket)
